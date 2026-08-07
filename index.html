@@ -2,83 +2,77 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Purrlight | The Future of Light</title>
     
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Link to your external CSS -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- EXTERNAL LIBRARIES -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    <!-- Snipcart CSS -->
+    <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.2.2/default/snipcart.css" />
+
+    <!-- Core Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js" defer></script>
-
-    <!-- YOUR MULTIPLE CUSTOM SCRIPTS -->
-    <script src="engine3d.js" defer></script>
-    <script src="cursor.js" defer></script>
-    <script src="animations.js" defer></script>
-    <script src="interactions.js" defer></script>
+    <script src="main.js" defer></script>
 </head>
 <body>
 
-    <!-- 3D Vanta Background -->
     <div id="vanta-bg"></div>
 
-    <!-- Custom Cursor -->
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
-
-    <!-- Navigation -->
     <nav>
-        <div class="logo">PURRLIGHT</div>
+        <!-- Logo acts as home button -->
+        <a href="index.html" class="logo">PURRLIGHT</a>
         <div class="nav-links">
-            <a href="#home" class="scroll-link">Home</a>
-            <a href="#collection" class="scroll-link">Collection</a>
-            <a href="#" id="login-btn">Sign In</a>
+            <a href="store.html">Store</a>
+            <a href="index.html#highlights">Highlights</a>
+            <!-- Snipcart Cart Trigger -->
+            <button class="cart-btn snipcart-checkout">
+                Cart (<span class="snipcart-items-count">0</span>)
+            </button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero" id="home">
-        <h1 class="hero-title" id="main-title">Illuminate<br>Your Aura</h1>
-        <p class="hero-subtitle">Welcome to Purrlight.shop. We curate hyper-modern, luminescent aesthetics for the next generation of living.</p>
-        <button class="btn-glow" id="cta-button">Enter The Shop</button>
+        <h1 class="hero-title">Illuminate<br>Your Aura</h1>
+        <p class="hero-subtitle">Curated Print-On-Demand apparel and hyper-modern aesthetics.</p>
+        <a href="store.html" class="btn-glow">View Full Collection</a>
     </section>
 
-    <!-- Collection Section -->
-    <section id="collection">
-        <h2 class="section-title gs-reveal">The Genesis Drop</h2>
+    <section id="highlights">
+        <h2 class="section-title gs-reveal">Most Picked</h2>
         <div class="collection-grid">
+            
             <div class="product-card gs-reveal">
-                <h3>Neon Threads</h3>
-                <p>Apparel woven with fiber-optic threading that reacts to environmental soundscapes.</p>
-                <a href="#" class="action-link add-to-cart" data-item="Neon Threads">Add to Cart →</a>
+                <div class="product-img-placeholder">[ Product Image ]</div>
+                <h3>Neon Threads Hoodie</h3>
+                <span class="price">€59.99</span>
+                <a href="item-neon-hoodie.html" class="btn-glow" style="padding: 0.8rem 2rem;">View Details</a>
             </div>
-            <div class="product-card gs-reveal gs-delay-1">
-                <h3>Prism Visor</h3>
-                <p>Augmented eyewear featuring holographic displays and a sleek, titanium-alloy rim.</p>
-                <a href="#" class="action-link add-to-cart" data-item="Prism Visor">Add to Cart →</a>
+
+            <div class="product-card gs-reveal">
+                <div class="product-img-placeholder">[ Product Image ]</div>
+                <h3>Cyber Tee</h3>
+                <span class="price">€29.99</span>
+                <a href="item-cyber-tee.html" class="btn-glow" style="padding: 0.8rem 2rem;">View Details</a>
             </div>
-            <div class="product-card gs-reveal gs-delay-2">
-                <h3>Aura Lamp</h3>
-                <p>A smart ambient light sphere that syncs perfectly with your biorhythms and mood.</p>
-                <a href="#" class="action-link add-to-cart" data-item="Aura Lamp">Add to Cart →</a>
-            </div>
+
         </div>
     </section>
 
-    <!-- Checkdomain SSL Seal Footer -->
-    <footer style="position: fixed; bottom: 20px; left: 20px; z-index: 100;">
+    <!-- Checkdomain SSL Seal -->
+    <footer style="padding: 20px; text-align: center; margin-top: 50px;">
         <a href="https://www.checkdomain.de/unternehmen/garantie/ssl/popup/" onclick="window.open(this.href + '?host=' + window.location.host,'','height=600,width=560,scrollbars=yes'); return false;">
             <img src="https://www.checkdomain.de/assets/bundles/web/app/widget/seal/img/ssl_certificate/de/150x150.png?20260720-124458" alt="SSL-Zertifikat" style="width: 80px; height: auto;" />
         </a>
     </footer>
+
+    <!-- Snipcart Installation Script (Hidden) -->
+    <!-- NOTE: Replace "YOUR_PUBLIC_API_KEY" with your actual Snipcart Public API Key when you make an account -->
+    <script async src="https://cdn.snipcart.com/themes/v3.2.2/default/snipcart.js"></script>
+    <div hidden id="snipcart" data-api-key="ODZiZjI3YzgtYzZlYy00OGFjLWE5ZGQtNjQ5NTU0OGJhN2FiNjM4MTAwMTA4MjQ5ODY2MzI0"></div>
 
 </body>
 </html>
