@@ -3,45 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern & Stylish | Next-Gen Web</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>Purrlight | The Future of Light</title>
     
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <!-- EXTERNAL SCRIPTS (The heavy lifters for animations and UI) -->
+    <!-- SweetAlert2 for beautiful click interactions -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Three.js & Vanta.js for 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <!-- GSAP for timeline animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Lenis for buttery smooth scrolling -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+
     <style>
         /* =========================================
-           CSS VARIABLES & RESET
+           CORE VARIABLES & RESET
         ========================================= */
         :root {
-            --bg-color: #050505;
+            --bg-dark: #030305;
             --text-main: #ffffff;
-            --text-muted: #888888;
-            --accent-1: #00f0ff;
-            --accent-2: #ff003c;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-muted: #a0a0b8;
+            --purr-pink: #ff007f;
+            --purr-cyan: #00f0ff;
+            --purr-purple: #8a2be2;
+            --glass: rgba(20, 20, 30, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.05);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none; /* Hide default cursor */
+            cursor: none !important; /* Hide default cursor */
         }
 
         body, html {
             width: 100%;
-            font-family: 'Space Grotesk', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
             color: var(--text-main);
             overflow-x: hidden;
-            scroll-behavior: smooth;
+        }
+
+        /* Lenis Smooth Scroll Fix */
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+
+        /* =========================================
+           3D BACKGROUND CONTAINER
+        ========================================= */
+        #vanta-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
         }
 
         /* =========================================
            CUSTOM CURSOR
         ========================================= */
-        .cursor-dot,
-        .cursor-outline {
+        .cursor-dot, .cursor-outline {
             position: fixed;
             top: 0;
             left: 0;
@@ -52,29 +81,17 @@
         }
 
         .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--accent-1);
+            width: 6px;
+            height: 6px;
+            background-color: var(--purr-cyan);
+            box-shadow: 0 0 10px var(--purr-cyan);
         }
 
         .cursor-outline {
             width: 40px;
             height: 40px;
-            border: 1px solid rgba(0, 240, 255, 0.5);
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
-        }
-
-        /* =========================================
-           CANVAS BACKGROUND
-        ========================================= */
-        #particle-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            pointer-events: none;
+            border: 1px solid rgba(255, 0, 127, 0.5);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
         }
 
         /* =========================================
@@ -89,395 +106,462 @@
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--glass-border);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
         }
 
         .logo {
+            font-family: 'Syncopate', sans-serif;
             font-weight: 700;
             font-size: 1.5rem;
-            letter-spacing: 2px;
-            background: linear-gradient(45deg, var(--accent-1), var(--accent-2));
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, var(--purr-cyan), var(--purr-pink));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
         }
 
         .nav-links a {
             color: var(--text-main);
             text-decoration: none;
-            margin-left: 2rem;
             font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s ease;
+            letter-spacing: 2px;
+            position: relative;
+            padding-bottom: 5px;
         }
 
-        .nav-links a:hover {
-            color: var(--accent-1);
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--purr-pink);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         /* =========================================
            HERO SECTION
         ========================================= */
-        .hero {
-            height: 100vh;
+        section {
+            min-height: 100vh;
+            padding: 100px 5%;
             display: flex;
             flex-direction: column;
             justify-content: center;
+        }
+
+        .hero {
             align-items: center;
             text-align: center;
-            padding: 0 20px;
         }
 
-        .hero h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
+        .hero-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(3rem, 8vw, 7rem);
             font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, #fff, var(--text-muted));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: float 6s ease-in-out infinite;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            text-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
         }
 
-        .hero p {
-            font-size: clamp(1rem, 2vw, 1.5rem);
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
             color: var(--text-muted);
             max-width: 600px;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
 
-        .cta-btn {
-            padding: 1rem 3rem;
-            background: transparent;
-            border: 1px solid var(--accent-1);
+        /* Glow Button */
+        .btn-glow {
+            padding: 1.2rem 3.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 0, 127, 0.3);
             color: var(--text-main);
-            font-family: inherit;
+            font-family: 'Syncopate', sans-serif;
             font-size: 1rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            border-radius: 50px;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .cta-btn::before {
+        .btn-glow::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--accent-1);
-            transition: all 0.4s ease;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0%;
+            height: 0%;
+            background: radial-gradient(circle, var(--purr-pink) 0%, transparent 70%);
+            border-radius: 50%;
             z-index: -1;
+            transition: all 0.5s ease;
+            opacity: 0;
         }
 
-        .cta-btn:hover::before {
-            left: 0;
+        .btn-glow:hover {
+            border-color: var(--purr-pink);
+            box-shadow: 0 0 30px rgba(255, 0, 127, 0.4);
+            transform: translateY(-3px);
         }
-        
-        .cta-btn:hover {
-            color: #000;
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
+
+        .btn-glow:hover::before {
+            width: 300%;
+            height: 300%;
+            opacity: 0.5;
         }
 
         /* =========================================
-           FEATURES SECTION (GLASSMORPHISM)
+           SHOP / COLLECTION SECTION
         ========================================= */
-        .features {
-            padding: 10rem 5%;
+        .section-title {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .collection-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            gap: 3rem;
         }
 
-        .glass-card {
-            background: var(--glass-bg);
+        .product-card {
+            background: var(--glass);
             border: 1px solid var(--glass-border);
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            transition: transform 0.4s ease, border-color 0.4s ease;
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .glass-card:hover {
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--purr-cyan), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .product-card:hover {
             transform: translateY(-10px);
-            border-color: var(--accent-1);
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
-        .glass-card h3 {
-            font-size: 1.5rem;
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card h3 {
+            font-size: 1.8rem;
             margin-bottom: 1rem;
-            color: var(--accent-1);
+            color: var(--text-main);
         }
 
-        .glass-card p {
+        .product-card p {
             color: var(--text-muted);
+            margin-bottom: 2rem;
             line-height: 1.6;
         }
 
+        .action-link {
+            color: var(--purr-cyan);
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         /* =========================================
-           SCROLL ANIMATIONS (JS triggered classes)
+           CUSTOM SWEETALERT STYLING
         ========================================= */
-        .hidden {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        .swal2-popup.purr-modal {
+            background: rgba(15, 15, 25, 0.85) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 0, 127, 0.3) !important;
+            border-radius: 24px !important;
+            color: white !important;
+            font-family: 'Outfit', sans-serif !important;
         }
-
-        .show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Keyframes */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
+        .swal2-title { font-family: 'Syncopate', sans-serif !important; }
+        .swal2-confirm.purr-confirm {
+            background: var(--purr-pink) !important;
+            border-radius: 50px !important;
+            padding: 12px 30px !important;
+            letter-spacing: 1px !important;
         }
     </style>
 </head>
 <body>
 
-    <!-- Custom Cursor -->
-    <div class="cursor-dot" data-cursor></div>
-    <div class="cursor-outline" data-cursor></div>
+    <!-- 3D Vanta Background -->
+    <div id="vanta-bg"></div>
 
-    <!-- Interactive Background -->
-    <canvas id="particle-canvas"></canvas>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
     <!-- Navigation -->
     <nav>
-        <div class="logo">NEO.STUDIO</div>
+        <div class="logo">PURRLIGHT</div>
         <div class="nav-links">
-            <a href="#home">Home</a>
-            <a href="#work">Work</a>
-            <a href="#contact">Contact</a>
+            <a href="#home" class="scroll-link">Home</a>
+            <a href="#collection" class="scroll-link">Collection</a>
+            <a href="#" id="login-btn">Sign In</a>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
-        <h1 class="hidden">Design The<br>Future</h1>
-        <p class="hidden" style="transition-delay: 100ms;">We build digital experiences that live at the intersection of aesthetic brilliance and flawless engineering.</p>
-        <button class="cta-btn hidden" style="transition-delay: 200ms;">Explore Vision</button>
+        <h1 class="hero-title" id="main-title">Illuminate<br>Your Aura</h1>
+        <p class="hero-subtitle">Welcome to Purrlight.shop. We curate hyper-modern, luminescent aesthetics for the next generation of living.</p>
+        <button class="btn-glow" id="cta-button">Enter The Shop</button>
     </section>
 
-    <!-- Features Section -->
-    <section class="features" id="work">
-        <div class="glass-card hidden">
-            <h3>Fluid Interactions</h3>
-            <p>Every element is designed to respond naturally to user input, creating a seamless bridge between human intention and digital response.</p>
-        </div>
-        <div class="glass-card hidden" style="transition-delay: 150ms;">
-            <h3>Glassmorphic UI</h3>
-            <p>Utilizing modern CSS backdrop filters to create depth, hierarchy, and a premium frosted glass aesthetic.</p>
-        </div>
-        <div class="glass-card hidden" style="transition-delay: 300ms;">
-            <h3>Algorithmic Art</h3>
-            <p>Dynamic, code-driven backgrounds powered by HTML5 Canvas and Vanilla JavaScript mathematics.</p>
+    <!-- Collection Section -->
+    <section id="collection">
+        <h2 class="section-title gs-reveal">The Genesis Drop</h2>
+        <div class="collection-grid">
+            
+            <div class="product-card gs-reveal">
+                <h3>Neon Threads</h3>
+                <p>Apparel woven with fiber-optic threading that reacts to environmental soundscapes.</p>
+                <a href="#" class="action-link add-to-cart" data-item="Neon Threads">Add to Cart →</a>
+            </div>
+
+            <div class="product-card gs-reveal gs-delay-1">
+                <h3>Prism Visor</h3>
+                <p>Augmented eyewear featuring holographic displays and a sleek, titanium-alloy rim.</p>
+                <a href="#" class="action-link add-to-cart" data-item="Prism Visor">Add to Cart →</a>
+            </div>
+
+            <div class="product-card gs-reveal gs-delay-2">
+                <h3>Aura Lamp</h3>
+                <p>A smart ambient light sphere that syncs perfectly with your biorhythms and mood.</p>
+                <a href="#" class="action-link add-to-cart" data-item="Aura Lamp">Add to Cart →</a>
+            </div>
+
         </div>
     </section>
 
+    <!-- SCRIPTING ENGINE -->
     <script>
-        /* =========================================
-           1. CUSTOM CURSOR LOGIC
-        ========================================= */
+        /* ==============================================================
+           1. CUSTOM CURSOR PHYSICS
+        ============================================================== */
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
-        const interactiveElements = document.querySelectorAll('a, button');
-
-        window.addEventListener('mousemove', function (e) {
+        
+        window.addEventListener('mousemove', (e) => {
             const posX = e.clientX;
             const posY = e.clientY;
-
-            // Instant follow for dot
+            
             cursorDot.style.left = `${posX}px`;
             cursorDot.style.top = `${posY}px`;
-
-            // Delayed follow for outline
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
+            
+            cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 400, fill: "forwards" });
         });
 
-        // Add hover effect for interactive elements
-        interactiveElements.forEach(el => {
+        // Expand cursor on interactive elements
+        document.querySelectorAll('a, button').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 cursorOutline.style.width = '60px';
                 cursorOutline.style.height = '60px';
                 cursorOutline.style.backgroundColor = 'rgba(0, 240, 255, 0.1)';
+                cursorOutline.style.borderColor = 'var(--purr-cyan)';
             });
             el.addEventListener('mouseleave', () => {
                 cursorOutline.style.width = '40px';
                 cursorOutline.style.height = '40px';
                 cursorOutline.style.backgroundColor = 'transparent';
+                cursorOutline.style.borderColor = 'rgba(255, 0, 127, 0.5)';
             });
         });
 
-        /* =========================================
-           2. SCROLL REVEAL ANIMATIONS
-        ========================================= */
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
-        };
+        /* ==============================================================
+           2. VANTA.JS 3D BACKGROUND
+        ============================================================== */
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0xff007f, /* Purr Pink */
+            backgroundColor: 0x030305, /* Deep Dark */
+            points: 12.00,
+            maxDistance: 22.00,
+            spacing: 18.00
+        });
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('show');
-                }
+        /* ==============================================================
+           3. LENIS SMOOTH SCROLLING (Studio Freight)
+        ============================================================== */
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
+            smooth: true
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Make nav links smoothly scroll using Lenis
+        document.querySelectorAll('.scroll-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                lenis.scrollTo(target);
             });
-        }, observerOptions);
+        });
 
-        const hiddenElements = document.querySelectorAll('.hidden');
-        hiddenElements.forEach((el) => observer.observe(el));
+        /* ==============================================================
+           4. GSAP & SCROLLTRIGGER ANIMATIONS
+        ============================================================== */
+        gsap.registerPlugin(ScrollTrigger);
 
-        /* =========================================
-           3. CANVAS PARTICLE ENGINE
-        ========================================= */
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
+        // Hero Load Animation
+        const heroTimeline = gsap.timeline();
+        heroTimeline.fromTo("#main-title", 
+            { y: 100, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 1.5, ease: "power4.out", delay: 0.2 }
+        )
+        .fromTo(".hero-subtitle", 
+            { y: 30, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, 
+            "-=1"
+        )
+        .fromTo("#cta-button", 
+            { scale: 0.8, opacity: 0 }, 
+            { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.7)" }, 
+            "-=0.5"
+        );
+
+        // Scroll Reveal for Collection Elements
+        gsap.utils.toArray('.gs-reveal').forEach((elem, i) => {
+            let delay = elem.classList.contains('gs-delay-1') ? 0.2 : 
+                        elem.classList.contains('gs-delay-2') ? 0.4 : 0;
+            
+            gsap.fromTo(elem, 
+                { y: 50, opacity: 0 },
+                {
+                    y: 0, 
+                    opacity: 1, 
+                    duration: 1, 
+                    ease: "power3.out",
+                    delay: delay,
+                    scrollTrigger: {
+                        trigger: elem,
+                        start: "top 85%", // Triggers when top of element hits 85% of viewport
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        });
+
+        /* ==============================================================
+           5. SWEETALERT2 INTERACTIONS (Making clicks do things)
+        ============================================================== */
         
-        let particlesArray;
-        let mouse = { x: null, y: null, radius: 150 };
-
-        // Handle Resize
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        // Mouse position for particle interaction
-        window.addEventListener('mousemove', (event) => {
-            mouse.x = event.x;
-            mouse.y = event.y;
+        // Main CTA Button
+        document.getElementById('cta-button').addEventListener('click', () => {
+            Swal.fire({
+                title: 'ACCESS RESTRICTED',
+                text: 'The Purrlight Genesis Shop is currently in invite-only beta. Join the waitlist to get notified.',
+                icon: 'warning',
+                input: 'email',
+                inputPlaceholder: 'Enter your email address',
+                showCancelButton: true,
+                confirmButtonText: 'Join Waitlist',
+                cancelButtonText: 'Close',
+                customClass: {
+                    popup: 'purr-modal',
+                    confirmButton: 'purr-confirm'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'VERIFIED',
+                        text: `You have been added to the matrix: ${result.value}`,
+                        icon: 'success',
+                        customClass: { popup: 'purr-modal', confirmButton: 'purr-confirm' }
+                    });
+                }
+            });
         });
-        window.addEventListener('mouseout', () => {
-            mouse.x = undefined;
-            mouse.y = undefined;
+
+        // Login Link
+        document.getElementById('login-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            Swal.fire({
+                title: 'AUTHENTICATE',
+                html: `
+                    <input type="text" id="login" class="swal2-input" placeholder="Username / ID">
+                    <input type="password" id="password" class="swal2-input" placeholder="Passkey">
+                `,
+                confirmButtonText: 'Sign In',
+                focusConfirm: false,
+                customClass: { popup: 'purr-modal', confirmButton: 'purr-confirm' }
+            });
         });
 
-        // Particle Class
-        class Particle {
-            constructor(x, y, directionX, directionY, size, color) {
-                this.x = x;
-                this.y = y;
-                this.directionX = directionX;
-                this.directionY = directionY;
-                this.size = size;
-                this.color = color;
-                this.baseX = this.x;
-                this.baseY = this.y;
-                this.density = (Math.random() * 30) + 1;
-            }
-
-            // Draw particle
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-
-            // Update particle position and check mouse interaction
-            update() {
-                // Bounds check
-                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
-                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-
-                // Mouse interaction physics
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
+        // Add to Cart Buttons
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const itemName = btn.getAttribute('data-item');
                 
-                if (distance < mouse.radius) {
-                    let forceDirectionX = dx / distance;
-                    let forceDirectionY = dy / distance;
-                    let force = (mouse.radius - distance) / mouse.radius;
-                    let directionX = forceDirectionX * force * this.density;
-                    let directionY = forceDirectionY * force * this.density;
-                    
-                    this.x -= directionX;
-                    this.y -= directionY;
-                } else {
-                    if (this.x !== this.baseX) {
-                        let dx = this.x - this.baseX;
-                        this.x -= dx / 10;
-                    }
-                    if (this.y !== this.baseY) {
-                        let dy = this.y - this.baseY;
-                        this.y -= dy / 10;
-                    }
-                }
+                // Trigger a toast notification
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    customClass: { popup: 'purr-modal' }
+                });
 
-                // Move particle naturally
-                this.x += this.directionX;
-                this.y += this.directionY;
-                this.draw();
-            }
-        }
-
-        // Initialize particle network
-        function init() {
-            particlesArray = [];
-            let numberOfParticles = (canvas.height * canvas.width) / 9000;
-            
-            for (let i = 0; i < numberOfParticles; i++) {
-                let size = (Math.random() * 2) + 1;
-                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                let directionX = (Math.random() * 2) - 1;
-                let directionY = (Math.random() * 2) - 1;
-                let color = 'rgba(0, 240, 255, 0.5)';
-
-                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
-            }
-        }
-
-        // Connect particles with lines if close enough
-        function connect() {
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
-                        + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                    
-                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
-                        let opacityValue = 1 - (distance / 20000);
-                        ctx.strokeStyle = `rgba(0, 240, 255, ${opacityValue})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-
-        // Animation Loop
-        function animate() {
-            requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, innerWidth, innerHeight);
-            
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-            }
-            connect();
-        }
-
-        // Boot up
-        init();
-        animate();
+                Toast.fire({
+                    icon: 'success',
+                    title: `${itemName} added to your cargo.`
+                });
+            });
+        });
     </script>
 </body>
 </html>
